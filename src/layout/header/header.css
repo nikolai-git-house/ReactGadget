@@ -1,0 +1,10 @@
+.logoLink {
+    text-indent: -9999px;
+    white-space: nowrap;
+    display: inline-flex;
+    width: 9.625em;
+    height: 3.4375em;
+    background: url('../../assets/images/spinsci-logo.png') 0 0 no-repeat;
+    background-size: cover;
+    float: right;
+}

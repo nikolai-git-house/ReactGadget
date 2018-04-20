@@ -1,0 +1,167 @@
+.contain {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    height: 100%
+}
+.filtercontain {
+    width: 15%;
+    height: 30px;
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+}
+.calltype {
+    width: 20%;
+    height: 30px;
+    display: inline-block;
+    padding: 10px;
+    margin: 10px;
+}
+
+.refresh {
+    float: right;
+    margin-right: 5%;
+    padding: 5px;
+    border-radius: 10%;
+}
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+.mbottom {
+    margin-bottom: 10%;
+}
+
+.enable {
+    cursor: auto;
+    pointer-events: all;
+    background-color: null;
+}
+
+.disable {
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: lightgray;
+}
+
+.enableAllBtns {
+    cursor: auto;
+    pointer-events: all;
+    background-color: null;
+}
+
+.disableAllBtns {
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: lightgray;
+}
+
+.disableAllBtns > svg > path {
+    fill: lightgray;
+}
+
+.answer {
+    color: green;
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=90);
+}
+
+.hangup {
+    color: red;
+    -webkit-transform: rotate(-135deg);
+    -moz-transform: rotate(-135deg);
+    -ms-transform: rotate(-135deg);
+    -o-transform: rotate(-135deg);
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=-135);
+}
+
+.buttonlabel {
+    margin: 0;
+    padding: 0;
+    margin-top: 4px;
+    font-size: x-small;
+}
+
+.callbuttons {
+    border: 0;
+    background: transparent;
+    border-radius: 10%;
+    outline: none;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.gray {
+    color: lightgray;
+}
+
+.black {
+    color: black;
+}
+
+.centerdiv {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    text-align: center;
+}
+
+button {
+    cursor: pointer;
+    color: black;
+    border-radius: 2px;
+}
+
+  /* Ripple magic */
+button{
+    position: relative;
+    overflow: hidden;
+}
+button:after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, .5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 1;
+    }
+    20% {
+      transform: scale(25, 25);
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: scale(40, 40);
+    }
+  }
+
+  button:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+  }

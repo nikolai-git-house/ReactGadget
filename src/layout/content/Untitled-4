@@ -1,0 +1,372 @@
+import React from 'react';
+import { connect } from 'react-redux';
+import FontAwesomeIcon from '@fortawesome/react-fontawesome';
+import faPhone from '@fortawesome/fontawesome-free-solid/faPhone';
+import faCheck from '@fortawesome/fontawesome-free-solid/faCheck';
+import faEnvelope from '@fortawesome/fontawesome-free-solid/faEnvelope';
+import faShare from '@fortawesome/fontawesome-free-solid/faShare';
+import faPause from '@fortawesome/fontawesome-free-solid/faPause';
+import style from './main.css';
+import { fetchQueue, agentaPostRequest, agentaGetRequest } from '../../polling/services';
+// import { callActions, transferAction } from '../../polling/finesseActions';
+import { callActions } from '../../polling/finesseActions';
+
+// const getTime = date => new Date(date).toLocaleTimeString();
+const handleChange = () => {};
+// const vmNumber = '749921';
+const commonButtonName = 'btnIdentify';
+class Content extends React.Component {
+  componentDidMount = () => {
+    console.log('Component mounted.', this.props);
+  };
+
+  componentDidUpdate = () => {
+    if ((this.props.agentAction === 'ANSWER' || this.props.agentAction === 'DROP') && this.props.callID !== '' && this.props.dialog !== undefined) {
+      const calltoAct = this.props.queue.filter(x => x.callID === this.props.callID);
+      console.log(calltoAct, '<--- call to act');
+      const cActions = {
+        dialog: calltoAct[0].dialog,
+        agentAction: this.props.agentAction,
+        callID: this.props.callID,
+        extension: this.props.agentExtension,
+      };
+      callActions(cActions);
+      if (this.props.agentAction === 'ANSWER') {
+        const parkActions = {
+          dialog: calltoAct[0].dialog,
+          agentAction: 'HOLD',
+          callID: this.props.callID,
+          extension: this.props.agentExtension,
+        };
+        callActions(parkActions);
+      }
+    }
+  };
+  componentWillUnmount = () => {
+    console.log('Component un-mounted.');
+  };
+  handleRefresh = () => {
+    this.props.getQueue(this.props.agentID);
+  };
+  handlePick = (callID) => {
+    this.props.pickCall('pick', callID, this.props.agentID, this.props.agentExtension, this.props.queue);
+  };
+  handleAnswer = (callID) => {
+    // this.props.answerCall(callID, this.props.agentAction, this.props.dialog);
+    this.props.answerCall(callID, this.props.agentExtension, this.props.queue);
+  };
+  handleHangup= (callID) => {
+    this.props.hangupCall(callID);
+  };
+  handleDequeue = (callID) => {
+    this.props.dequeueCall('dequeue', callID, this.props.agentID, this.props.agentExtension);
+    this.props.removeUIRow(callID);
+  };
+  handlePark = (callID, dialog) => {
+    console.log(callID, dialog, '<----- call parked');
+  };
+  handleVM = (callID) => {
+    console.log('transfered call....');
+    this.props.vmCall('vm', callID);
+    this.props.removeUIRow(callID);
+  };
+  renderPICKButtons = (e, dialog, disableBtns) => {
+    e.agentAction = e.agentAction || '';
+    const disableClass = disableBtns ? style.disableAllBtns : '';
+    let pickBtn = (
+      <button className={[commonButtonName, disableClass].join(' ')} id={`pick${e.callID}`} onClick={() => this.handlePick(e.callID)}>
+        <FontAwesomeIcon icon={faCheck} aria-hidden="true" />
+      </button>
+    );
+    if (e.agentAction !== '') {
+      const pickStyle = e.agentAction === 'ANSWER' ? style.disable : style.enable;
+      pickBtn = (
+        <button id={`park${e.callID}`} className={[pickStyle, commonButtonName, disableClass].join(' ')} onClick={() => this.handlePark(e.callID, dialog)}>
+          <FontAwesomeIcon icon={faPause} aria-hidden="true" />
+        </button>
+      );
+    }
+    return pickBtn;
+  };
+  renderANSButtons = (e, disableBtns) => {
+    e.agentAction = e.agentAction || '';
+    const disableClass = disableBtns ? style.disableAllBtns : '';
+    const answerStyle = e.agentAction === '' ? style.disable : style.enable;
+    const answerIconStyle = e.agentAction === 'DROP' ? style.hangup : style.answer;
+    let idAnswer = 'answer';
+    if (e.agentAction === 'DROP') {
+      idAnswer = 'hangup';
+    }
+    let clickEventHandler = this.handleAnswer;
+    if (e.agentAction === 'DROP') {
+      clickEventHandler = this.handleHangup;
+    }
+    const ansBtn = (
+      <button onClick={() => clickEventHandler(e.callID)} className={[answerStyle, commonButtonName, disableClass].join(' ')} aria-hidden={false} id={`${idAnswer}${e.callID}`}>
+        <FontAwesomeIcon className={answerIconStyle} icon={faPhone} aria-hidden="true" />
+      </button>
+    );
+    return ansBtn;
+  };
+  renderVMButtons = (e, disableBtns) => {
+    e.agentAction = e.agentAction || '';
+    const disableClass = disableBtns ? style.disableAllBtns : '';
+    let vmBtn = <button className={[commonButtonName, disableClass].join(' ')} id={`vm${e.callID}`} onClick={() => this.handleVM(e.callID)}><FontAwesomeIcon icon={faEnvelope} aria-hidden="true" /></button>;
+    if (e.agentAction !== '') {
+      const vmStyle = style.disable;
+      vmBtn = <button className={[commonButtonName, disableClass, vmStyle].join(' ')} id={`vm${e.callID}`} onClick={() => this.handleVM(e.callID)}><FontAwesomeIcon icon={faEnvelope} aria-hidden="true" /></button>;
+    }
+    return vmBtn;
+  };
+  renderDQButtons = (e, disableBtns) => {
+    e.agentAction = e.agentAction || '';
+    const disableClass = disableBtns ? style.disableAllBtns : '';
+    let dqBtn = <button className={[commonButtonName, disableClass].join(' ')} id={`dq${e.callID}`} onClick={() => this.handleDequeue(e.callID)}><FontAwesomeIcon icon={faShare} aria-hidden="true" /></button>;
+    if (e.agentAction !== '') {
+      const dqStyle = style.disable;
+      dqBtn = <button className={[commonButtonName, disableClass, dqStyle].join(' ')} id={`dq${e.callID}`} onClick={() => this.handleDequeue(e.callID)}><FontAwesomeIcon icon={faShare} aria-hidden="true" /></button>;
+    }
+    return dqBtn;
+  };
+
+  render() {
+    /*
+      -- park --
+      <td>
+        <button id={`park${e.callID}`} onClick={() => this.handlePark(e.callID, dialog)}>
+          <FontAwesomeIcon icon={faPause} aria-hidden="true" />
+        </button>
+      </td>
+      -- hangup --
+      <td>
+        <button className={style.mbottom} aria-hidden={false} id={`hangup${e.callID}`}>
+          <FontAwesomeIcon className={style.hangup} icon={faPhone} aria-hidden="true" />
+        </button>
+      </td>
+    */
+    // const dialog = this.props.dialog;
+    const pickBtn = this.renderPICKButtons;
+    const ansBtn = this.renderANSButtons;
+    const vmkBtn = this.renderVMButtons;
+    const dqBtn = this.renderDQButtons;
+    // const bBtnState = this.props.disableBtns;
+    // const actingCallID = this.props.actingCallID;
+
+    const rows = this.props.queue ? this.props.queue.map(e => (
+      <tr>
+        <td>{e.callID ? e.callID : ''}</td>
+        <td>{e.ICMInfoKeys ? e.ICMInfoKeys : '' }</td>
+        <td>{e.visualQType ? e.visualQType : ''}</td>
+        <td>{e.agentID ? e.agentID : ''}</td>
+        <td>{e.agentExtension ? e.agentExtension : ''}</td>
+        <td>{e.queueID ? e.queueID : ''}</td>
+        <td>{e.ani ? e.ani : ''}</td>
+        <td>{e.dnis ? e.dnis : ''}</td>
+        <td>{e.custName ? e.custName : ''}</td>
+        <td>{e.agentName ? e.agentName : ''}</td>
+        <td>{}</td>
+        <td>{pickBtn(e, e.dialog, e.disableBtns)}</td>
+        <td>{ansBtn(e, e.disableBtns)}</td>
+        <td>{vmkBtn(e, e.disableBtns)}</td>
+        <td>{dqBtn(e, e.disableBtns)}</td>
+      </tr>
+    )) : '';
+    const teamName = this.props.queue ? this.props.queue.map(e => (
+      <option value={e.team_name}>{e.team_name}</option>
+    )) : '';
+    const agentState = this.props.queue ? this.props.queue.map(e => (
+      <option value={e.state}>{e.state}</option>
+    )) : '';
+    const agentName = this.props.queue ? this.props.queue.map(e => (
+      <option value={e.agent_id}>{e.agent_id}</option>
+    )) : '';
+    const callType = this.props.queue ? this.props.queue.map(e => (
+      <option value={e.call_type}>{e.call_type}</option>
+    )) : '';
+    return (
+      <div className={style.contain}>
+        <div className={style.contain}>
+          <select className={style.filtercontain} value="" onChange={handleChange}>
+            <option value="">Team Name</option>
+            {teamName}
+          </select>
+          <select className={style.filtercontain} value="" onChange={handleChange}>
+            <option value="">Agent State</option>
+            {agentState}
+          </select>
+          <select className={style.filtercontain} value="" onChange={handleChange}>
+            <option value="">Agent Name</option>
+            {agentName}
+          </select>
+          <select className={style.calltype} value="" onChange={handleChange}>
+            <option value="">Queued/Direct/All</option>
+            {callType}
+          </select>
+          <button className={style.refresh} onClick={this.handleRefresh} >
+            refresh
+          </button>
+        </div>
+        <table style={{ fontSize: 'small' }}>
+          <thead>
+            <tr>
+              <th>Call ID</th>
+              <th>ICM InfoKeys</th>
+              <th>Visual Q Type</th>
+              <th>Agent ID</th>
+              <th>Agent Extension</th>
+              <th>Queue ID</th>
+              <th>ANI</th>
+              <th>DNIS</th>
+              <th>Customer Name</th>
+              <th>Agent Name</th>
+              <th>Call Settings</th>
+              <th />
+              <th />
+              <th />
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {rows}
+          </tbody>
+        </table>
+      </div >
+    );
+  }
+}
+
+const mapStateToProps = (state) => {
+  const { fetchQueueReducer: {
+    agentID,
+    agentExtension,
+    agentAction,
+    callID,
+    queue = [],
+    dialog,
+    disableBtns,
+  } = {} } = state;
+
+  return {
+    queue,
+    agentID,
+    dialog,
+    agentExtension,
+    agentAction,
+    callID,
+    disableBtns,
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  getQueue(aID) {
+    dispatch(fetchQueue(aID));
+  },
+  pickCall(aType, cID, aID, aExtension) {
+    this.disableButtons(cID);
+    dispatch(agentaPostRequest(aType, cID, aID, aExtension, () => {
+      this.enableButtons(cID);
+      dispatch({
+        type: 'AGENT_ACTION',
+        payload: {
+          action: 'ANSWER',
+          callID: cID,
+        },
+      });
+      // const index = queue.findIndex(x => x.callID === cID);
+      /*
+      const calltoAct = [];
+      queue.forEach((x) => {
+        if (x.callID === cID) {
+          calltoAct.push(x);
+        }
+      });
+      const cActions = {
+        dialog: calltoAct[0].dialog,
+        agentAction: 'ANSWER',
+        callID: cID,
+        extension: aExtension,
+      };
+      console.log(calltoAct, '<------ check calltoAct', cID, cActions);
+      callActions(cActions);
+      const parkActions = {
+        dialog: calltoAct[0].dialog,
+        agentAction: 'HOLD',
+        callID: cID,
+        extension: aExtension,
+      };
+      console.log(calltoAct, '<------ check calltoAct', cID, parkActions);
+      callActions(parkActions);
+      */
+    }));
+  },
+  answerCall(cID, aExtension, queue) {
+    dispatch({
+      type: 'AGENT_ACTION',
+      payload: {
+        action: 'DROP',
+        callID: cID,
+      },
+    });
+    const calltoAct = queue.filter(x => x.callID === cID);
+    const cActions = {
+      dialog: calltoAct[0].dialog,
+      agentAction: 'DROP',
+      callID: cID,
+      extension: aExtension,
+    };
+    callActions(cActions);
+    /* transferAction({
+      dialog,
+      callID: cID,
+      toAddress: vmNumber,
+    }); */
+  },
+  hangupCall(cID) {
+    dispatch({
+      type: 'REMOVE_ROW',
+      payload: {
+        callID: cID,
+      },
+    });
+    dispatch(agentaGetRequest('delete', cID));
+  },
+  removeUIRow(cID) {
+    dispatch({
+      type: 'REMOVE_ROW',
+      payload: {
+        callID: cID,
+      },
+    });
+  },
+  dequeueCall(aType, cID) {
+    dispatch(agentaGetRequest(aType, cID));
+  },
+  vmCall(aType, cID) {
+    dispatch(agentaGetRequest(aType, cID));
+  },
+  enableButtons(callID) {
+    dispatch({
+      type: 'UI_ACTIONS',
+      payload: {
+        callID,
+        disableBtns: false,
+      },
+    });
+  },
+  disableButtons(callID) {
+    dispatch({
+      type: 'UI_ACTIONS',
+      payload: {
+        callID,
+        disableBtns: true,
+      },
+    });
+  },
+  /* dispatchBindActions(nextProps) {
+    callActions(nextProps);
+  }, */
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(
+  Content,
+);

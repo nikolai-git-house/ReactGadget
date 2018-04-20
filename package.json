@@ -1,0 +1,172 @@
+{
+  "name": "agenta-healthcare-dashboard",
+  "version": "0.1.7",
+  "private": true,
+  "dependencies": {
+    "@fortawesome/fontawesome": "^1.1.2",
+    "@fortawesome/fontawesome-free-solid": "^5.0.4",
+    "@fortawesome/react-fontawesome": "0.0.17",
+    "autoprefixer": "7.1.2",
+    "awesome-phonenumber": "^2.2.3",
+    "axios": "^0.17.1",
+    "babel-core": "6.25.0",
+    "babel-eslint": "7.2.3",
+    "babel-jest": "20.0.3",
+    "babel-loader": "7.1.1",
+    "babel-preset-react-app": "^3.1.0",
+    "babel-runtime": "6.26.0",
+    "case-sensitive-paths-webpack-plugin": "2.1.1",
+    "chalk": "1.1.3",
+    "css-loader": "0.28.4",
+    "dateformat": "^3.0.2",
+    "dotenv": "4.0.0",
+    "eslint-config-react-app": "^2.0.1",
+    "eslint-loader": "1.9.0",
+    "eslint-plugin-flowtype": "2.35.0",
+    "extract-text-webpack-plugin": "3.0.0",
+    "file-loader": "0.11.2",
+    "fs-extra": "3.0.1",
+    "html-webpack-plugin": "2.29.0",
+    "jest": "20.0.4",
+    "normalize.css": "^7.0.0",
+    "object-assign": "4.1.1",
+    "parse-address": "0.0.8",
+    "phone-formatter": "0.0.2",
+    "postcss-flexbugs-fixes": "3.2.0",
+    "postcss-loader": "2.0.6",
+    "promise": "8.0.1",
+    "react": "^15.6.2",
+    "react-dev-utils": "^4.2.1",
+    "react-dom": "^15.6.2",
+    "react-ionicons": "^2.1.6",
+    "react-redux": "^5.0.6",
+    "react-router-dom": "^4.2.2",
+    "react-table": "^6.7.6",
+    "react-transition-group": "^1.2.1",
+    "reactstrap": "^4.8.0",
+    "redux": "^3.7.2",
+    "redux-logger": "^3.0.6",
+    "redux-multi": "^0.1.12",
+    "redux-thunk": "^2.2.0",
+    "rxjs": "^5.5.6",
+    "style-loader": "0.18.2",
+    "sw-precache-webpack-plugin": "0.11.4",
+    "typeface-roboto": "^0.0.45",
+    "url-loader": "0.5.9",
+    "uuid": "^3.1.0",
+    "wdio-mocha-framework": "^0.5.12",
+    "webpack": "3.5.1",
+    "webpack-dev-server": "2.7.1",
+    "webpack-manifest-plugin": "1.2.1",
+    "whatwg-fetch": "2.0.3"
+  },
+  "scripts": {
+    "selenium-setup": "selenium-standalone install",
+    "selenium-start": "selenium-standalone start",
+    "e2e-tests": "wdio wdio.conf.js",
+    "e2e-tests-watch": "wdio wdio.conf.js --watch",
+    "start": "node scripts/start.js",
+    "dev": "node scripts/start.js",
+    "build": "node scripts/build.js",
+    "test": "node scripts/test.js --env=jsdom",
+    "ci-test": "CI=true node scripts/test.js --env=jsdom"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}"
+    ],
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/__tests__/**/*.js?(x)",
+      "<rootDir>/src/**/?(*.)(spec|test).js?(x)"
+    ],
+    "testEnvironment": "node",
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.css$": "<rootDir>/config/jest/cssTransform.js",
+      "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
+    },
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+    ],
+    "moduleNameMapper": {
+      "^react-native$": "react-native-web",
+      "\\.(css|less)$": "identity-obj-proxy"
+    },
+    "moduleFileExtensions": [
+      "web.js",
+      "js",
+      "json",
+      "web.jsx",
+      "jsx",
+      "node"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "react-app"
+    ]
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "enzyme": "^2.9.1",
+    "eslint": "^4.13.1",
+    "eslint-config-airbnb": "^15.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^5.1.1",
+    "eslint-plugin-react": "^7.5.1",
+    "http": "0.0.0",
+    "identity-obj-proxy": "^3.0.0",
+    "jest-cli": "^21.2.1",
+    "lato-font": "^3.0.0",
+    "lodash": "^4.17.4",
+    "material-ui": "^0.19.4",
+    "node-sass": "^4.7.2",
+    "prop-types": "^15.6.0",
+    "react-css-modules": "^4.7.1",
+    "react-svg-loader": "^1.1.1",
+    "react-test-renderer": "^15.6.2",
+    "recompose": "^0.26.0",
+    "sass-loader": "^6.0.6",
+    "selenium-standalone": "^6.12.0",
+    "unicode-match-property-ecmascript": "^1.0.3",
+    "webdriverio": "^4.9.11"
+  },
+  "eslintConfig": {
+    "extends": "airbnb",
+    "rules": {
+      "react/jsx-filename-extension": [
+        1,
+        {
+          "extensions": [
+            ".js",
+            ".jsx"
+          ]
+        }
+      ],
+      "import/no-extraneous-dependencies": [
+        2,
+        {
+          "devDependencies": true
+        }
+      ]
+    },
+    "env": {
+      "browser": true,
+      "node": true,
+      "jest": true
+    },
+    "globals": {
+      "React": true
+    },
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "plugins": [
+      "react"
+    ]
+  }
+}
