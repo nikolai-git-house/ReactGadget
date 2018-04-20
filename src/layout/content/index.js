@@ -173,7 +173,8 @@ class Content extends Component {
         </button>
       </div>
     );
-    if (e.agentAction !== '') {
+    //if (e.agentAction !== '') { //Disable VM Button
+    if (e.call_type.charAt(0) == 'G') { // If This is QueueCall disable VM Button
       const vmStyle = style.disable;
       vmBtn = (
         <div className={style.centerdiv}>
@@ -201,7 +202,8 @@ class Content extends Component {
         </button>
       </div>
     );
-    if (e.agentAction !== '') {
+    //if (e.agentAction !== '') { // Disable DQ Button
+    if (e.call_type.charAt(0) == 'D' || (this.props.userRole='agent' && e.call_type.charAt(0) == 'G')) { // When DirectCall or (QueueCall && user=Agent )
       const dqStyle = style.disable;
       dqBtn = (
         <div className={style.centerdiv}>
@@ -395,6 +397,7 @@ const mapStateToProps = (state) => {
     dialog,
     disableBtns,
     iDebug,
+    userRole
   } = {} } = state;
 
   return {
@@ -406,6 +409,7 @@ const mapStateToProps = (state) => {
     callID,
     disableBtns,
     iDebug,
+    userRole
   };
 };
 const mapDispatchToProps = dispatch => ({

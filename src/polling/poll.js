@@ -16,6 +16,7 @@ const initial = {
   doItPayload: {},
   disableBtns: false,
   iDebug: false,
+  userRole: 'agent',
 };
 const FETCH_QUEUE_FULFILLED = 'FETCH_QUEUE_FULFILLED';
 const INIITIALIZE_STORE = 'INIITIALIZE_STORE';
