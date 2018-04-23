@@ -2,8 +2,11 @@ const convert = require('xml-js');
 
 const FETCH_QUEUE_FULFILLED = 'FETCH_QUEUE_FULFILLED';
 const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
+const FETCH_TEAM_FULFILLED = 'FETCH_TEAM_FULFILLED';
+
 const API_SERVER = 'https://vm-ephraim-1.dev.in.spinsci.com/visualq/';
 const FINESSE_USER_ENDPOINT = 'https://vm-ephraim-1.dev.in.spinsci.com/finesse/api/User/';
+const FINESSE_TEAM_ENDPOINT = 'https://vm-ephraim-1.dev.in.spinsci.com/finesse/api/Team/';
 const QUEUE_END_POINT = 'bindFromFinesse?agentID=';
 
 export const fetchQueue = aID => (
@@ -52,6 +55,24 @@ export const getUser = aID => (
         console.log(jsData);
         dispatch({
           type: FETCH_USER_FULFILLED,
+          payload: jsData,
+        });
+      });
+  }
+);
+
+export const getTeam = teamID => (
+  (dispatch) => {
+    fetch(`${FINESSE_TEAM_ENDPOINT}${teamID}`)
+      .then(response => response.json())
+      .then((data) => {
+        console.log('GetTeam Resonse = ');
+        console.log(data.response);
+        console.log('Converted JS Response =');
+        const jsData = convert.xml2json(data.response, { compact: true, spaces: 4 });
+        console.log(jsData);
+        dispatch({
+          type: FETCH_TEAM_FULFILLED,
           payload: jsData,
         });
       });

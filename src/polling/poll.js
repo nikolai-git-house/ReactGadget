@@ -18,6 +18,7 @@ const initial = {
   iDebug: false,
   userRole: 'agent',
   user: null,
+  team: null,
 };
 const FETCH_QUEUE_FULFILLED = 'FETCH_QUEUE_FULFILLED';
 const INIITIALIZE_STORE = 'INIITIALIZE_STORE';
@@ -28,6 +29,7 @@ const REMOVE_ROW = 'REMOVE_ROW';
 const UI_ACTIONS = 'UI_ACTIONS';
 const DO_IT = 'DO_IT';
 const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
+const FETCH_TEAM_FULFILLED = 'FETCH_TEAM_FULFILLED';
 
 export default (state = {}, action) => {
   let state2 = state;
@@ -52,6 +54,12 @@ export default (state = {}, action) => {
       state2 = {
         ...state2,
         user: action.payload,
+      };
+      break;
+    case FETCH_TEAM_FULFILLED:
+      state2 = {
+        ...state2,
+        team: action.payload,
       };
       break;
     case FETCH_QUEUE_FULFILLED:
