@@ -14,7 +14,7 @@ import Ionicon from 'react-ionicons';
 
 import style from './main.css';
 import Footer from '../footer';
-import { fetchQueue, agentaPostRequest, agentaGetRequest } from '../../polling/services';
+import { fetchUser, fetchQueue, agentaPostRequest, agentaGetRequest } from '../../polling/services';
 import { callActions, transferAction } from '../../polling/finesseActions';
 import { enableButtonsAction, disableButtonsAction, dropCallAction, removeRowAction, answerCallAction, parkCallAction } from '../../polling/actions';
 
@@ -51,11 +51,18 @@ class Content extends Component {
       }
     }
   };
+  componentWillReceiveProps(newProp){
+    if(newProp.agentID != this.props.agentID)
+    {
+      this.props.getuser(newProp.agentID);
+    }
+  }
   componentWillUnmount = () => {
     console.log('Component un-mounted.');
   };
   handleRefresh = () => {
     this.props.getQueue(this.props.agentID);
+    this.props.getUser(this.props.agentID);
   };
   handlePick = (callID) => {
     this.props.pickCall('pick', callID, this.props.agentID, this.props.agentExtension, this.props.iDebug);
@@ -397,7 +404,8 @@ const mapStateToProps = (state) => {
     dialog,
     disableBtns,
     iDebug,
-    userRole
+    userRole,
+    user
   } = {} } = state;
 
   return {
@@ -409,12 +417,16 @@ const mapStateToProps = (state) => {
     callID,
     disableBtns,
     iDebug,
-    userRole
+    userRole,
+    user
   };
 };
 const mapDispatchToProps = dispatch => ({
   getQueue(aID) {
     dispatch(fetchQueue(aID));
+  },
+  getUser(aID) {
+    dispatch(fetchUser(aID));
   },
   pickCall(aType, cID, aID, aExtension, iDbg) {
     disableButtonsAction(cID);

@@ -17,6 +17,7 @@ const initial = {
   disableBtns: false,
   iDebug: false,
   userRole: 'agent',
+  user: null,
 };
 const FETCH_QUEUE_FULFILLED = 'FETCH_QUEUE_FULFILLED';
 const INIITIALIZE_STORE = 'INIITIALIZE_STORE';
@@ -26,6 +27,7 @@ const AGENT_ACTION = 'AGENT_ACTION';
 const REMOVE_ROW = 'REMOVE_ROW';
 const UI_ACTIONS = 'UI_ACTIONS';
 const DO_IT = 'DO_IT';
+const FETCH_USER_FULFILLED = 'FETCH_USER_FULFILLED';
 
 export default (state = {}, action) => {
   let state2 = state;
@@ -44,6 +46,12 @@ export default (state = {}, action) => {
         ...state2,
         queue: addDialog(action.payload.dialog, state),
         dialog: action.payload.dialog,
+      };
+      break;
+    case FETCH_USER_FULFILLED:
+      state2 = {
+        ...state2,
+        user: action.payload,
       };
       break;
     case FETCH_QUEUE_FULFILLED:
