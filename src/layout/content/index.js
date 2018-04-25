@@ -14,7 +14,7 @@ import Ionicon from 'react-ionicons';
 
 import style from './main.css';
 import Footer from '../footer';
-import { fetchUser, fetchQueue, agentaPostRequest, agentaGetRequest } from '../../polling/services';
+import { getUser, fetchQueue, agentaPostRequest, agentaGetRequest } from '../../polling/services';
 import { callActions, transferAction } from '../../polling/finesseActions';
 import { enableButtonsAction, disableButtonsAction, dropCallAction, removeRowAction, answerCallAction, parkCallAction } from '../../polling/actions';
 
@@ -426,7 +426,7 @@ const mapDispatchToProps = dispatch => ({
     dispatch(fetchQueue(aID));
   },
   getUser(aID) {
-    dispatch(fetchUser(aID));
+    dispatch(getUser(aID));
   },
   pickCall(aType, cID, aID, aExtension, iDbg) {
     disableButtonsAction(cID);
