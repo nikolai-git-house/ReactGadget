@@ -123,7 +123,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest-cli": "^21.2.1",
     "lato-font": "^3.0.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.19",
     "material-ui": "^0.19.4",
     "node-sass": "^4.7.2",
     "prop-types": "^15.6.0",
